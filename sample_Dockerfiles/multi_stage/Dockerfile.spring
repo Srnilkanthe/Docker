@@ -1,0 +1,27 @@
+# Stage 1: Builder
+FROM maven:3.8.1-openjdk-11 AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application code
+COPY src ./src
+
+# Build the application
+RUN mvn package -DskipTests
+
+# Stage 2: Runner
+FROM openjdk:11-jre-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the built jar from the builder stage
+COPY --from=builder /app/target/myapp.jar ./myapp.jar
+
+# Command to run the application
+CMD ["java", "-jar", "myapp.jar"]

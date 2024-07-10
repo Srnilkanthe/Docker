@@ -1,0 +1,18 @@
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:11-jre-slim
+
+# Set environment variables
+ENV TZ=UTC \
+    APP_HOME=/app
+
+# Create the application directory
+WORKDIR $APP_HOME
+
+# Copy the packaged Spring Boot application JAR file into the container
+COPY target/your-spring-boot-app.jar $APP_HOME/app.jar
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Command to run the application
+CMD ["java", "-jar", "app.jar"]
